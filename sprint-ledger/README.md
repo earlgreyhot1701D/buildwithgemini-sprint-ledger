@@ -1,8 +1,16 @@
+<div align="center">
+
+<img src="assets/sprint-ledger-banner.png" alt="Sprint Ledger — Hackathon Tracking Agent" width="100%" />
+
 # ⏱️ Sprint Ledger
 
-**Sprint Ledger** is an agentic hackathon tracking assistant built with the Google Agent Development Kit (ADK) and `agents-cli`. It helps developers capture, verify, and track hackathon deadlines and submission requirements with deterministic date calculations, Firestore persistence, checklist tracking, and rich A2UI cards.
+### A hackathon tracker agent built with Google Agent Development Kit (ADK), Gemini 2.5 Flash, Firestore, and A2UI.
+
+</div>
 
 ---
+
+**Sprint Ledger** helps developers capture, verify, and track hackathon deadlines and submission requirements with deterministic date calculations, Firestore persistence, checklist tracking, and rich A2UI cards.
 
 ## 🌟 Key Features
 
