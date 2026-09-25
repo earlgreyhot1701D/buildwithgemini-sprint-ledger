@@ -15,7 +15,7 @@ Clone this repo, open [Antigravity](https://antigravity.google), and build your 
 ![Google Cloud](https://img.shields.io/badge/Google%20Cloud-Agent%20Platform-4285F4?logo=googlecloud&logoColor=white)
 ![Built with ADK](https://img.shields.io/badge/Built%20with-ADK%20%2B%20agents--cli-34A853)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
-![Projects](https://img.shields.io/badge/Projects-8-blue)
+![Projects](https://img.shields.io/badge/Projects-9-blue)
 
 <sub>📖 <a href="https://cszhu.github.io/build-with-gemini/">Lab Guide</a> · 🛠️ <a href="https://google.github.io/agents-cli/guide/getting-started/">agents-cli</a> · 🤖 <a href="https://google.github.io/adk-docs/">ADK</a></sub>
 
@@ -95,6 +95,7 @@ Bump the "Projects" badge count at the top when you add one.
 
 ### 🏢 Productivity & Enterprise Agents
 
+- ⏱️ **[Sprint Ledger](https://github.com/earlgreyhot1701D/buildwithgemini-sprint-ledger)**: A hackathon deadline & submission tracker agent with deterministic date math, Firestore persistence, interactive checklist management, and cover art generation. <br/> <sub>by [@earlgreyhot1701D](https://github.com/earlgreyhot1701D)</sub>
 - 🔧 **[GitCraft](https://github.com/fpobletemu/buildwithgemini-gitcraft)**: A developer git assistant that inspects your repo and drafts Conventional-Commits-style messages, grounded in a commit-style guide. <br/> <sub>by [@fpobletemu](https://github.com/fpobletemu)</sub>
 - 🖥️ **[IT Helpdesk Agent](https://github.com/NaweedAhmadi/buildwithgemini-it-helpdesk-agent)**: An IT support assistant that answers from a knowledge base and remembers context across sessions, with a ticket dashboard UI. <br/> <sub>by [@NaweedAhmadi](https://github.com/NaweedAhmadi)</sub>
 

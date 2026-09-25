@@ -162,7 +162,11 @@ def generate_cover_image(hackathon_id: str, prompt_hint: str = "") -> str:
 
 async def generate_memories_callback(callback_context: CallbackContext):
     """Callback after turn execution to persist user profile & facts to Memory Bank."""
-    await callback_context.add_session_to_memory()
+    try:
+        await callback_context.add_session_to_memory()
+    except Exception as e:
+        # Gracefully handle environments without an attached memory service
+        pass
     return None
 
 
