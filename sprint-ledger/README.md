@@ -1,94 +1,99 @@
-# simple-agent
+# ⏱️ Sprint Ledger
 
-Simple ReAct agent
-Agent generated with `agents-cli` version `1.4.0`
-
-## Project Structure
-
-```
-simple-agent/
-├── app/         # Core agent code
-│   ├── agent.py               # Main agent logic
-│   ├── fast_api_app.py        # FastAPI Backend server
-│   └── app_utils/             # App utilities and helpers
-├── tests/                     # Unit, integration, and load tests
-├── GEMINI.md                  # AI-assisted development guide
-└── pyproject.toml             # Project dependencies
-```
-
-> 💡 **Tip:** Use [Antigravity CLI](https://antigravity.google/) for AI-assisted development - project context is pre-configured in `GEMINI.md`.
-
-## Requirements
-
-Before you begin, ensure you have:
-- **uv**: Python package manager (used for all dependency management in this project) - [Install](https://docs.astral.sh/uv/getting-started/installation/) ([add packages](https://docs.astral.sh/uv/concepts/dependencies/) with `uv add <package>`)
-- **agents-cli**: Agents CLI - Install with `uv tool install google-agents-cli`
-- **Google Cloud SDK**: For GCP services - [Install](https://cloud.google.com/sdk/docs/install)
-
-
-## Quick Start
-
-Install `agents-cli` and its skills if not already installed:
-
-```bash
-uvx google-agents-cli setup
-```
-
-Install required packages:
-
-```bash
-agents-cli install
-```
-
-Test the agent with a local web server:
-
-```bash
-agents-cli playground
-```
-
-You can also use features from the [ADK](https://adk.dev/) CLI with `uv run adk`.
-
-## Commands
-
-| Command              | Description                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------------------- |
-| `agents-cli install` | Install dependencies using uv                                                         |
-| `agents-cli playground` | Launch local development environment                                                  |
-| `agents-cli lint`    | Run code quality checks                                                               |
-| `agents-cli eval`    | Evaluate agent behavior (generate, grade, analyze, and more — see `agents-cli eval --help`) |
-| `uv run pytest tests/unit tests/integration` | Run unit and integration tests                                                        |
-| `agents-cli deploy`  | Deploy agent to Agent Runtime                                                                |
-| `agents-cli publish gemini-enterprise` | Register deployed agent to Gemini Enterprise                    || [A2A Inspector](https://github.com/a2aproject/a2a-inspector) | Launch A2A Protocol Inspector                                                        |
-
-## 🛠️ Project Management
-
-| Command | What It Does |
-|---------|--------------|
-| `agents-cli scaffold enhance` | Add CI/CD pipelines and Terraform infrastructure |
-| `agents-cli infra cicd` | One-command setup of entire CI/CD pipeline + infrastructure |
-| `agents-cli scaffold upgrade` | Auto-upgrade to latest version while preserving customizations |
+**Sprint Ledger** is an agentic hackathon tracking assistant built with the Google Agent Development Kit (ADK) and `agents-cli`. It helps developers capture, verify, and track hackathon deadlines and submission requirements with deterministic date calculations, Firestore persistence, checklist tracking, and rich A2UI cards.
 
 ---
 
-## Development
+## 🌟 Key Features
 
-Edit your agent logic in `app/agent.py` and test with `agents-cli playground` - it auto-reloads on save.
+- **🌐 Single-Page Rules Ingestion**: `fetch_page(url)` securely grabs rules from hackathon platforms (Devpost, dev.to, AWS Builder, etc.) with strict HTML sanitization and timeout protections.
+- **🛡️ Evidence-First Extraction**: Extracts deadline quotes, timezones, and checklist criteria verbatim. Missing items are strictly marked `"NOT FOUND"`—never hallucinated.
+- **📐 Deterministic Date Math**: Never lets the LLM perform date math. Python's standard `datetime` and `zoneinfo` parse deadlines, compute UTC timestamps, calculate days remaining, and set a **Ship-By Date** (`deadline - 1 day`).
+- **🗄️ Firestore Persistence**: Saves and organizes tracked hackathons and tracks checklist progress.
+- **🧠 Cross-Session Memory**: Integrates Vertex AI Memory Bank (`PreloadMemoryTool` & callbacks) to remember developer preferences, handles, and tech stacks across conversations.
+- **🎨 A2UI Rich Cards & Custom Frontend**: Renders hackathon countdowns, checklists, and status badges in a branded, responsive web interface.
 
-## Deployment
+---
 
+## 🏗️ Architecture & Project Structure
+
+```text
+sprint-ledger/
+├── app/
+│   ├── agent.py               # Main ADK agent logic, tools, and callbacks
+│   ├── db.py                  # Firestore database client & CRUD operations
+│   ├── fast_api_app.py        # FastAPI backend server
+│   └── app_utils/             # App utilities and helpers
+├── frontend/                  # Custom chat web interface (A2UI & brand styling)
+│   ├── static/index.html      # Tailored frontend with live A2UI renderer
+│   ├── main.py                # FastAPI proxy server
+│   └── requirements.txt
+├── tests/                     # Unit and integration tests
+├── seed_firestore.py          # Firestore database initialization script
+├── agents-cli-manifest.yaml   # Agent metadata and deployment specification
+├── pyproject.toml             # Project dependencies (managed with uv)
+├── Dockerfile                 # Container image specification
+└── README.md
+```
+
+---
+
+## 🛠️ Built With
+
+- **Framework**: [Google ADK (Agent Development Kit)](https://google.github.io/adk-docs/) & `agents-cli`
+- **Model**: Gemini 2.5 Flash on Vertex AI
+- **Database**: Google Cloud Firestore (Native mode)
+- **Memory**: Vertex AI Memory Bank
+- **UI**: A2UI (Agent-to-User Interface) + Custom FastAPI / Cloud Run frontend
+
+---
+
+## 🚀 Quick Start
+
+### 1. Prerequisites
+
+- Python 3.11+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- [agents-cli](https://google.github.io/agents-cli/guide/getting-started/): `uv tool install google-agents-cli`
+- [Google Cloud SDK (gcloud)](https://cloud.google.com/sdk/docs/install) authenticated to your project:
+  ```bash
+  gcloud auth application-default login
+  ```
+
+### 2. Install Dependencies
+
+```bash
+uv sync
+```
+
+### 3. Local Development
+
+Run the agent locally with the ADK playground:
+```bash
+uv run agents-cli playground
+```
+
+Or run the custom web frontend:
+```bash
+cd frontend
+uv run uvicorn main:app --reload --port 8080
+```
+
+---
+
+## 🧪 Testing
+
+Run unit and integration tests:
+```bash
+uv run pytest tests/unit tests/integration
+```
+
+---
+
+## 🚢 Deployment
+
+Deploy to Vertex AI Agent Runtime:
 ```bash
 gcloud config set project <your-project-id>
 agents-cli deploy
 ```
-
-To add CI/CD and Terraform, run `agents-cli scaffold enhance`.
-To set up your production infrastructure, run `agents-cli infra cicd`.
-
-## Observability
-
-Built-in telemetry exports to Cloud Trace, BigQuery, and Cloud Logging.
-
-## A2A Inspector
-
-This agent supports the [A2A Protocol](https://a2a-protocol.org/). Use the [A2A Inspector](https://github.com/a2aproject/a2a-inspector) to test interoperability.
-See the [A2A Inspector docs](https://github.com/a2aproject/a2a-inspector) for details.
