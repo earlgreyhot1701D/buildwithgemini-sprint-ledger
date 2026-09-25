@@ -4,7 +4,13 @@
 
 # ⏱️ Sprint Ledger
 
-### A hackathon tracker agent built with Google Agent Development Kit (ADK), Gemini 2.5 Flash, Firestore, and A2UI.
+### An agent-first hackathon tracker built with Google Agent Development Kit (ADK), Gemini 2.5 Flash, Firestore, Vertex AI Memory Bank, and A2UI.
+
+[![Live App](https://img.shields.io/badge/Live%20App-Cloud%20Run-1FB5B7?style=for-the-badge&logo=googlecloud&logoColor=white)](https://sprint-ledger-ui-906232481563.us-east1.run.app)
+[![Agent Runtime](https://img.shields.io/badge/Agent%20Engine-Vertex%20AI-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white)](https://console.cloud.google.com/agent-platform/runtimes/locations/us-east1/agent-engines/5149362597572640768/dashboard?project=qwiklabs-gcp-04-1625fe9e416b)
+[![Demo Video](https://img.shields.io/badge/Watch-48s%20Demo%20Video-E85A1F?style=for-the-badge&logo=youtube&logoColor=white)](https://raw.githubusercontent.com/earlgreyhot1701D/buildwithgemini-sprint-ledger/main/sprint-ledger/assets/sprint_ledger_demo.mp4)
+
+<br/>
 
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://python.org)
 [![Google Cloud](https://img.shields.io/badge/Google%20Cloud-Agent%20Platform-4285F4?logo=googlecloud&logoColor=white)](https://cloud.google.com)
@@ -17,7 +23,30 @@
 
 ---
 
-**Sprint Ledger** helps developers capture, verify, and track hackathon deadlines and submission requirements with deterministic date calculations, Firestore persistence, checklist tracking, and rich A2UI cards.
+### 🌐 Live Deployment
+- **Live Web Application (Cloud Run)**: [https://sprint-ledger-ui-906232481563.us-east1.run.app/](https://sprint-ledger-ui-906232481563.us-east1.run.app/)
+- **Reasoning Engine Backend (Vertex AI)**: `projects/906232481563/locations/us-east1/reasoningEngines/5149362597572640768`
+
+---
+
+## 💡 The Problem & The Solution
+
+| The Developer Pain Point | How Sprint Ledger Solves It |
+|---|---|
+| **Disqualifications by Timezones**: Rules state "11:59 PM PT" or "UTC"; developers in other time zones miss deadlines by hours. | **Deterministic Date Engine**: Never trusts an LLM with date math. Standard Python `datetime` and `zoneinfo` parse timezones, compute exact UTC cutoffs, and calculate days remaining. |
+| **Hallucinated Submission Rules**: Generic LLMs hallucinate submission criteria or invent links. | **Evidence-First Extraction**: Quoted verbatim from the rules page; missing items are explicitly labeled `"NOT FOUND"` until verified. |
+| **Lost Context Between Sessions**: Builders work over weeks across multiple devices. | **Persistent Cross-Session Memory**: Integrates Vertex AI Memory Bank (`PreloadMemoryTool` & callbacks) to remember developer tech stacks, past wins, and preferences. |
+| **Boring / Ineffective Chat UIs**: Plain text chat makes checking off submission criteria tedious. | **A2UI Interactive Cards**: Live side-by-side card grid on Cloud Run with interactive checklist checkboxes that persist directly to Firestore. |
+
+---
+
+## 🏛️ Core Design Principles
+
+1. **Evidence precedes conclusions**: Verbatim quotes are extracted from rules pages before any dates are parsed.
+2. **Structural determinism precedes intelligence**: Code handles timestamps, math, and database writes; Gemini 2.5 Flash handles natural language and semantic understanding.
+3. **Human authority remains visible**: The developer explicitly reviews and confirms extracted requirements before records are committed to Firestore.
+
+---
 
 ## 🎬 Live Agent Demo
 
@@ -99,13 +128,20 @@ sprint-ledger/
 
 ---
 
-## 🛠️ Built With
+## 🛠️ Google Cloud Track 3 Checklist & Built With
 
-- **Framework**: [Google ADK (Agent Development Kit)](https://google.github.io/adk-docs/) & `agents-cli`
-- **Model**: Gemini 2.5 Flash on Vertex AI
-- **Database**: Google Cloud Firestore (Native mode)
-- **Memory**: Vertex AI Memory Bank
-- **UI**: A2UI (Agent-to-User Interface) + Custom FastAPI / Cloud Run frontend
+This project integrates the complete suite of Google Cloud Agent-First tools featured in Track 3:
+
+| Track 3 Layer | Google Cloud Technology | Implementation Details |
+|---|---|---|
+| 🤖 **Agent Framework** | [Google ADK](https://google.github.io/adk-docs/) + `agents-cli` | Agent definition in `app/agent.py` using `Agent` & `App` abstractions |
+| ⚡ **Foundation Model** | [Gemini 2.5 Flash](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/gemini) | Fast, low-latency reasoning and natural language extraction |
+| 🧠 **Cross-Session Memory** | [Vertex AI Memory Bank](https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/memory-bank) | `PreloadMemoryTool` and post-turn callbacks to remember dev profiles |
+| 🗄️ **Structured Database** | [Cloud Firestore](https://cloud.google.com/firestore) | Real-time CRUD for tracked hackathons and checklist completion states |
+| 📦 **Cloud Storage** | [Google Cloud Storage](https://cloud.google.com/storage) | Bucket `gs://sprint-ledger-media-1625fe9e` for generated media and assets |
+| 🪟 **Agent-to-User UI** | [A2UI v0.8](https://a2ui.org) | Dynamic cards, progress bars, and metadata pills emitted over A2A |
+| 🌐 **Web Proxy & Frontend** | [Cloud Run](https://cloud.google.com/run) + FastAPI | Scalable, unauthenticated container talking A2A protocol to Agent Platform |
+| 🚀 **Agent Deployment** | [Vertex AI Agent Runtime](https://cloud.google.com/vertex-ai) | Deployed Reasoning Engine (`projects/.../reasoningEngines/...`) |
 
 ---
 
