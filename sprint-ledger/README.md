@@ -27,6 +27,25 @@ https://raw.githubusercontent.com/earlgreyhot1701D/buildwithgemini-sprint-ledger
 
 *Watch Sprint Ledger render live side-by-side dashboard cards, toggle interactive Firestore checklist items, evaluate sprint priority deadlines, and query real-time database records.*
 
+### 🎥 How This Demo Was Created (Tooling & Pipeline)
+
+This demo was recorded and produced completely headlessly inside the Linux cloud development environment:
+
+1. **Headless Browser Orchestration ([Playwright](https://playwright.dev/python/))**:
+   - An asynchronous Python script (`record_demo.py`) launched a headless Chromium browser instance with `--window-size=1280,800` and automated context video recording (`record_video_dir`).
+   - The script navigated to the deployed Cloud Run service URL and waited for network idle to ensure the Firestore `/api/hackathons` payload rendered the side-by-side card grid.
+   - It automated human-paced interactions: hovering, toggling a live submission checkbox to show instant strike-through and progress bar recalculation, typing prompts with randomized keystroke latency (`delay=30ms`), and smoothly scrolling to newly generated A2UI cards.
+2. **Deterministic Live Prompts Tested**:
+   - **Prompt 1 (Core Capability)**: *"What is our highest priority hackathon and what are the remaining submission requirements?"* — Demonstrates deterministic deadline sorting and outstanding requirement extraction.
+   - **Prompt 2 (Database Tool Call)**: *"Look up our Global Open Agents Challenge from Firestore and verify what requirements we need to complete."* — Demonstrates dynamic tool execution and real-time Firestore document retrieval over the Agent-to-Agent (A2A) protocol.
+3. **Video Encoding & Transcoding ([FFmpeg](https://ffmpeg.org/))**:
+   - Playwright outputs raw VP8 `.webm` streams during headless recording.
+   - An automated FFmpeg pipeline transcoded the raw capture to universally compatible H.264 / AAC MP4 with high fidelity:
+     ```bash
+     ffmpeg -y -i raw_capture.webm -c:v libx264 -crf 22 -preset medium -pix_fmt yuv420p assets/sprint_ledger_demo.mp4
+     ```
+   - Result: A smooth, crisp 48-second 1280x800 MP4 demo weighing only 1.5MB.
+
 ## 🌟 Key Features
 
 - **🌐 Single-Page Rules Ingestion**: `fetch_page(url)` securely grabs rules from hackathon platforms (Devpost, dev.to, AWS Builder, etc.) with strict HTML sanitization and timeout protections.
