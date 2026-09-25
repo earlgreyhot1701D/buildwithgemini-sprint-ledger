@@ -6,6 +6,13 @@
 
 ### A hackathon tracker agent built with Google Agent Development Kit (ADK), Gemini 2.5 Flash, Firestore, and A2UI.
 
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://python.org)
+[![Google Cloud](https://img.shields.io/badge/Google%20Cloud-Agent%20Platform-4285F4?logo=googlecloud&logoColor=white)](https://cloud.google.com)
+[![ADK](https://img.shields.io/badge/Built%20with-ADK%20%2B%20agents--cli-34A853)](https://google.github.io/adk-docs/)
+[![Firestore](https://img.shields.io/badge/Database-Firestore-FFCA28?logo=firebase&logoColor=black)](https://cloud.google.com/firestore)
+[![UI](https://img.shields.io/badge/UI-A2UI%20v0.8%20%2B%20FastAPI-1FB5B7)](https://a2ui.org)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
 </div>
 
 ---
@@ -23,7 +30,26 @@
 
 ---
 
-## 🏗️ Architecture & Project Structure
+## 🏗️ Architecture & Flow
+
+```mermaid
+flowchart TD
+    User(["Developer (Prompt / Rules URL)"]) --> Agent["Sprint Ledger Agent (ADK / Gemini 2.5)"]
+    Agent <--> Memory["Vertex AI Memory Bank (User Preferences & Handles)"]
+    
+    subgraph Ingestion & Verification
+        Agent -->|"fetch_page(url)"| Web["Hackathon Rules Page"]
+        Web -->|"HTML content"| Sanitize["Sanitizer & Verbatim Extractor"]
+        Sanitize -->|"deadline, timezone, criteria"| DateMath["Deterministic Date Engine (Python datetime)"]
+        DateMath -->|"UTC, days left, ship-by date"| Confirm{"User Explicit Confirmation"}
+    end
+    
+    Confirm -->|Approved| DB[("Google Cloud Firestore")]
+    DB --> CardGen["A2UI v0.8 Schema Generator"]
+    CardGen --> UI["Custom FastAPI Chat Web UI (Port 8080)"]
+```
+
+### Project Structure
 
 ```text
 sprint-ledger/
