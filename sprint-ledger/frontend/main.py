@@ -93,6 +93,55 @@ async def _json_errors(request: Request, exc: Exception):
     )
 
 
+FIRESTORE_PROJECT_ID = "qwiklabs-gcp-04-1625fe9e416b"
+
+
+@app.get("/api/hackathons")
+async def get_hackathons():
+    """Returns all tracked hackathons from Firestore."""
+    try:
+        from google.cloud import firestore
+
+        db = firestore.Client(project=FIRESTORE_PROJECT_ID)
+        docs = db.collection("hackathons").stream()
+        results = []
+        for doc in docs:
+            data = doc.to_dict()
+            data["id"] = doc.id
+            results.append(data)
+        return JSONResponse({"hackathons": results})
+    except Exception as e:
+        return JSONResponse({"error": str(e), "hackathons": []})
+
+
+@app.post("/api/checklist")
+async def toggle_checklist(req: Request):
+    """Updates a checklist item's done state in Firestore."""
+    try:
+        body = await req.json()
+        hackathon_id = body.get("hackathon_id")
+        item_index = int(body.get("item_index", 0))
+        done = bool(body.get("done", False))
+
+        from google.cloud import firestore
+
+        db = firestore.Client(project=FIRESTORE_PROJECT_ID)
+        doc_ref = db.collection("hackathons").document(hackathon_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return JSONResponse({"status": "error", "message": "Hackathon not found"}, status_code=404)
+
+        data = doc.to_dict()
+        checklist = data.get("checklist_items", [])
+        if 0 <= item_index < len(checklist):
+            checklist[item_index]["done"] = done
+            doc_ref.update({"checklist_items": checklist})
+            return JSONResponse({"status": "ok", "checklist_items": checklist})
+        return JSONResponse({"status": "error", "message": "Invalid item index"}, status_code=400)
+    except Exception as e:
+        return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
+
+
 # Reuse ONE A2A context per user so the agent remembers the conversation.
 _contexts: dict[str, str] = {}
 # Cache the agent card after the first fetch.
@@ -124,12 +173,24 @@ def _extract_parts(parts: list) -> list[dict]:
     for p in parts:
         root = getattr(p, "root", p)
         if isinstance(root, TextPart) and getattr(root, "text", None):
+            if "Cannot add session to memory" in root.text:
+                continue
             out.append({"kind": "text", "text": root.text})
         elif getattr(root, "data", None) is not None:
+            data = root.data
             meta = getattr(root, "metadata", None) or {}
             mime = meta.get("mimeType") if isinstance(meta, dict) else None
+            if not mime and isinstance(data, dict):
+                inner_meta = data.get("metadata")
+                if isinstance(inner_meta, dict):
+                    mime = inner_meta.get("mimeType")
             if mime == _A2UI_MIME:
-                out.append({"kind": "a2ui", "data": root.data})
+                actual_data = (
+                    data.get("data")
+                    if isinstance(data, dict) and "data" in data
+                    else data
+                )
+                out.append({"kind": "a2ui", "data": actual_data})
         elif isinstance(root, FilePart):
             uri = getattr(getattr(root, "file", None), "uri", None)
             if uri:
@@ -177,9 +238,13 @@ async def chat(req: Request):
             if isinstance(update, TaskArtifactUpdateEvent):
                 got_artifact_update = True
                 parts.extend(_extract_parts(update.artifact.parts))
+            # Also extract parts from status messages if present
+            status = getattr(update, "status", None) or getattr(task, "status", None)
+            if status and getattr(status, "message", None):
+                parts.extend(_extract_parts(status.message.parts))
 
         # Non-streaming fallback: pull parts from the final task's artifacts.
-        if not got_artifact_update and last_task is not None:
+        if not parts and last_task is not None:
             for artifact in getattr(last_task, "artifacts", None) or []:
                 parts.extend(_extract_parts(artifact.parts))
 

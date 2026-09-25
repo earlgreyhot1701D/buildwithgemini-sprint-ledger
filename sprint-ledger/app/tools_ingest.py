@@ -166,7 +166,11 @@ def calculate_deadlines(deadline_raw: str, timezone: str = "NOT FOUND") -> str:
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            dt = date_parser.parse(deadline_raw, tzinfos=TZ_INFOS, fuzzy=True)
+            # Clean common trailing colons after month and day (e.g. 'October 11: Submissions due at 11:59 PM PDT')
+            # which confuse dateutil parser into thinking the day is an hour
+            months_pattern = r"jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?"
+            cleaned_raw = re.sub(rf"\b({months_pattern})\s+(\d{{1,2}}):", r"\1 \2,", deadline_raw, flags=re.I)
+            dt = date_parser.parse(cleaned_raw, tzinfos=TZ_INFOS, fuzzy=True)
 
         if dt.tzinfo is None:
             if explicit_tzinfo:

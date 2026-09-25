@@ -119,3 +119,25 @@ def update_checklist_item_in_db(
         data["id"] = doc_ref.id
         return data
     return None
+
+
+def delete_hackathon_from_db(hackathon_id: str) -> bool:
+    """Deletes a hackathon document from Firestore by ID or name slug."""
+    db = get_firestore_client()
+    doc_ref = db.collection(HACKATHONS_COLLECTION).document(hackathon_id)
+    doc = doc_ref.get()
+    if doc.exists:
+        doc_ref.delete()
+        return True
+
+    # Fallback: search by name
+    docs = (
+        db.collection(HACKATHONS_COLLECTION)
+        .where("name", "==", hackathon_id)
+        .limit(1)
+        .stream()
+    )
+    for d in docs:
+        d.reference.delete()
+        return True
+    return False

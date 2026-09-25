@@ -19,6 +19,16 @@
 
 **Sprint Ledger** helps developers capture, verify, and track hackathon deadlines and submission requirements with deterministic date calculations, Firestore persistence, checklist tracking, and rich A2UI cards.
 
+## 🎬 Live Agent Demo
+
+https://github.com/user-attachments/assets/sprint_ledger_demo.mp4 (or view locally: [`assets/sprint_ledger_demo.mp4`](assets/sprint_ledger_demo.mp4))
+
+<video src="assets/sprint_ledger_demo.mp4" controls="controls" width="100%" style="max-height: 480px; border-radius: 8px;">
+  Your browser does not support the video tag. Watch the demo video: <a href="assets/sprint_ledger_demo.mp4">assets/sprint_ledger_demo.mp4</a>
+</video>
+
+*Watch Sprint Ledger render live side-by-side dashboard cards, toggle interactive Firestore checklist items, evaluate sprint priority deadlines, and query real-time database records.*
+
 ## 🌟 Key Features
 
 - **🌐 Single-Page Rules Ingestion**: `fetch_page(url)` securely grabs rules from hackathon platforms (Devpost, dev.to, AWS Builder, etc.) with strict HTML sanitization and timeout protections.
