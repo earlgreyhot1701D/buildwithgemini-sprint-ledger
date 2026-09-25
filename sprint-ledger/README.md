@@ -21,11 +21,9 @@
 
 ## 🎬 Live Agent Demo
 
-https://github.com/user-attachments/assets/sprint_ledger_demo.mp4 (or view locally: [`assets/sprint_ledger_demo.mp4`](assets/sprint_ledger_demo.mp4))
+[▶️ **Watch the Demo Video**](https://raw.githubusercontent.com/earlgreyhot1701D/buildwithgemini-sprint-ledger/main/sprint-ledger/assets/sprint_ledger_demo.mp4) (or view in repo: [`assets/sprint_ledger_demo.mp4`](assets/sprint_ledger_demo.mp4))
 
-<video src="assets/sprint_ledger_demo.mp4" controls="controls" width="100%" style="max-height: 480px; border-radius: 8px;">
-  Your browser does not support the video tag. Watch the demo video: <a href="assets/sprint_ledger_demo.mp4">assets/sprint_ledger_demo.mp4</a>
-</video>
+https://raw.githubusercontent.com/earlgreyhot1701D/buildwithgemini-sprint-ledger/main/sprint-ledger/assets/sprint_ledger_demo.mp4
 
 *Watch Sprint Ledger render live side-by-side dashboard cards, toggle interactive Firestore checklist items, evaluate sprint priority deadlines, and query real-time database records.*
 
